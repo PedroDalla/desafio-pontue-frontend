@@ -71,7 +71,7 @@ export const Home: React.FC = () => {
           {loading
             ? new Array(8)
                 .fill(undefined)
-                .map((item, index) => (
+                .map((_item, index) => (
                   <LoadingSkeleton width={360} height={180} key={index} />
                 ))
             : data.map((item, index) => (
