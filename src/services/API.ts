@@ -55,3 +55,19 @@ export async function getDetailedRedacoesFromUser(
     throw err;
   }
 }
+
+// Function to handle file upload
+export function uploadFile(file: File, access_token: string) {
+  const formData = new FormData();
+  formData.append("file[]", file, "[PROXY]");
+  return axios.post(
+    "https://desafio.pontue.com.br/alunos/redacao/create",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: "Bearer " + access_token,
+      },
+    }
+  );
+}

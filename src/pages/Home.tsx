@@ -7,12 +7,15 @@ import { IconFilePlus } from "@tabler/icons-react";
 import { ItemPreview } from "../components/ItemPreview";
 import { getDetailedRedacoesFromUser } from "../services/API";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
+import { createPortal } from "react-dom";
+import { UploadModal } from "../components/UploadModal";
 
 export const Home: React.FC = () => {
   const auth = useAuth();
   const navigate = useNavigate();
   const [data, setData] = useState<IRedacao[]>([]);
   const [loading, setLoading] = useState(true);
+  const [modalEnabled, setModalEnabled] = useState(false);
 
   useEffect(() => {
     if (auth && !auth.isAuthenticated) {
@@ -53,7 +56,11 @@ export const Home: React.FC = () => {
 
           {/* Button Section */}
           <div>
-            <button className="p-4 cursor-pointer rounded-md border-slate-200 border-2 hover:bg-indigo-800 hover:text-white transition-colors duration-75">
+            <button
+              onClick={() => {
+                setModalEnabled((v) => !v);
+              }}
+              className="p-4 cursor-pointer rounded-md border-slate-200 border-2 hover:bg-indigo-800 hover:text-white transition-colors duration-75">
               <IconFilePlus size={32} className="h-8 md:h-auto" />
             </button>
           </div>
@@ -64,12 +71,21 @@ export const Home: React.FC = () => {
           {loading
             ? new Array(8)
                 .fill(undefined)
-                .map(() => <LoadingSkeleton width={360} height={180} />)
+                .map((item, index) => (
+                  <LoadingSkeleton width={360} height={180} key={index} />
+                ))
             : data.map((item, index) => (
                 <ItemPreview item={item} key={index} />
               ))}
         </div>
       </main>
+      {createPortal(
+        <UploadModal
+          isOpen={modalEnabled}
+          closeModal={() => setModalEnabled((modalEnabled) => !modalEnabled)}
+        />,
+        document.body
+      )}
     </div>
   );
 };
