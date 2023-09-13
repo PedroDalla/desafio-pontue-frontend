@@ -1,11 +1,6 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
-
-interface Credentials {
-  email: string;
-  accessToken: string;
-  alunoId: string;
-}
+import { Credentials } from "../types";
 
 interface AuthContextShape {
   credentials?: Credentials;
@@ -44,12 +39,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     );
     if (response.status === 200) {
       setIsAuthenticated(true);
+      const userCredentials = { ...response.data, email: email };
 
       //Stores user credentials in the localStorage
       if (remember) {
-        localStorage.setItem("credentials", JSON.stringify(response.data));
+        localStorage.setItem("credentials", JSON.stringify(userCredentials));
       }
-      setCredentials(response.data);
+      setCredentials(userCredentials);
+      console.log(userCredentials);
     } else {
       throw new Error("Internal error");
     }
