@@ -1,8 +1,8 @@
 import { FormEvent, useEffect, useState } from "react";
-import { Logo } from "../components/Logo";
 import { useAuth } from "../hooks/useAuth";
 import { redirect, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import { Logo } from "../components/Logo";
 
 export const Login: React.FC = () => {
   const auth = useAuth();

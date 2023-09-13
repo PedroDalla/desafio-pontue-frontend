@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { Logo } from "./Logo";
 import { IconLogout } from "@tabler/icons-react";
+import { Logo } from "./Logo";
 
 export const Nav: React.FC = () => {
   const auth = useAuth();
