@@ -1,8 +1,19 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Nav } from "../components/Nav";
 import { IconArrowLeft, IconMoodSadDizzy } from "@tabler/icons-react";
+import { useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
 
 export const Error: React.FC = () => {
+  const navigate = useNavigate();
+  const auth = useAuth();
+
+  useEffect(() => {
+    if (auth && !auth.isAuthenticated) {
+      navigate("/login");
+    }
+  }, [auth, navigate]);
+
   return (
     <div className="h-screen w-screen">
       <Nav />
