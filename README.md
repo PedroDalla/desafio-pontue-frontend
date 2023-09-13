@@ -19,4 +19,5 @@ Tempo de desenvolvimento: 7 ~ 8 horas
 ## Notas aos avaliadores:
 
 - Imagens salvas na API anteriores a 2023 em muitos casos estão quebradas. Isso parece ser um problema interno na API (links quebrados) e não algo do front-end.
-- Em alguns momentos a API limita as requests mesmo com poucas requests. Não sei se isso pode ser relacionado à autenticação disponível ou algo específico da minha conexão
+- Em alguns momentos a API limita as requests mesmo com poucas requests. Não sei se isso pode ser relacionado à autenticação disponível ou algo específico da minha conexão.
+- Tentei utilizar o mínimo de requests possíveis porém essa limitação pode causar problemas com alguns usuários que tenham muitos documentos salvos.
