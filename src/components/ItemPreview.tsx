@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Redacao } from "../types";
+import { IRedacao } from "../types";
 import { IconFileDescription, IconPhoto } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 
-export const ItemPreview: React.FC<{ item: Redacao }> = ({ item }) => {
+export const ItemPreview: React.FC<{ item: IRedacao }> = ({ item }) => {
   const [imgError, setImgError] = useState(false);
   const fileType = item.urls[0].url.substring(
     item.urls[0].url.lastIndexOf(".")
@@ -28,7 +28,7 @@ export const ItemPreview: React.FC<{ item: Redacao }> = ({ item }) => {
           </div>
         ) : (
           <img
-            src={item.urls[0].url}
+            src={item.urls[item.urls.length - 1].url}
             className="object-cover min-w-full min-h-full max-h-full max-w-full"
             onError={() => handleImgError()}></img>
         )}
@@ -36,7 +36,7 @@ export const ItemPreview: React.FC<{ item: Redacao }> = ({ item }) => {
       <div className="flex px-2 py-3 gap-1 flex-col">
         <span className="font-medium text-lg">Redação #{item.numero}</span>
         <span className="font-light text-sm">
-          Criado em: {new Date(item.created_at).toLocaleString("pt-BR")}
+          Criado em: {new Date(item.created_at).toLocaleDateString("pt-BR")}
         </span>
       </div>
     </Link>

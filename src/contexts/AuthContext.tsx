@@ -1,9 +1,9 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
-import { Credentials } from "../types";
+import { ICredentials } from "../types";
 
 interface AuthContextShape {
-  credentials?: Credentials;
+  credentials?: ICredentials;
   login: (email: string, password: string, remember: boolean) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
@@ -17,7 +17,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [credentials, setCredentials] = useState<Credentials>();
+  const [credentials, setCredentials] = useState<ICredentials>();
 
   //Apply stored credentials if they exist
   useEffect(() => {

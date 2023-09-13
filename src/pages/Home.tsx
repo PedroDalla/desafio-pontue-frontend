@@ -2,15 +2,17 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Nav } from "../components/Nav";
-import axios from "axios";
-import { Redacao, RedacaoFromUser } from "../types";
+import { IRedacao } from "../types";
 import { IconFilePlus } from "@tabler/icons-react";
 import { ItemPreview } from "../components/ItemPreview";
+import { getDetailedRedacoesFromUser } from "../services/API";
+import { LoadingSkeleton } from "../components/LoadingSkeleton";
 
 export const Home: React.FC = () => {
   const auth = useAuth();
   const navigate = useNavigate();
-  const [data, setData] = useState<Redacao[]>([]);
+  const [data, setData] = useState<IRedacao[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (auth && !auth.isAuthenticated) {
@@ -22,33 +24,13 @@ export const Home: React.FC = () => {
   useEffect(() => {
     if (auth && auth.credentials) {
       const accessToken = auth.credentials.access_token;
-      axios
-        .get(
-          "https://desafio.pontue.com.br/index/aluno/" +
-            auth?.credentials?.aluno_id,
-          {
-            headers: {
-              Authorization: "Bearer " + accessToken,
-            },
-          }
-        )
-        .then((response) => {
-          if (response.status === 200) {
-            response.data.data.forEach((item: RedacaoFromUser) => {
-              axios
-                .get("https://desafio.pontue.com.br/redacao/" + item.id, {
-                  headers: {
-                    Authorization: "Bearer " + accessToken,
-                  },
-                })
-                .then((result) => {
-                  if (result.status === 200) {
-                    const redacao: Redacao = result.data.data;
-                    setData((data) => [...data, redacao]);
-                  }
-                });
-            });
-          }
+      getDetailedRedacoesFromUser(auth.credentials.aluno_id, accessToken)
+        .then((data) => {
+          setData(data);
+          setLoading(false);
+        })
+        .catch(() => {
+          navigate("/error");
         });
     }
   }, []);
@@ -79,9 +61,13 @@ export const Home: React.FC = () => {
 
         {/* Display Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 w-full gap-x-4 gap-y-8">
-          {data.map((item, index) => (
-            <ItemPreview item={item} key={index} />
-          ))}
+          {loading
+            ? new Array(8)
+                .fill(undefined)
+                .map(() => <LoadingSkeleton width={360} height={180} />)
+            : data.map((item, index) => (
+                <ItemPreview item={item} key={index} />
+              ))}
         </div>
       </main>
     </div>

@@ -1,4 +1,4 @@
-export interface Credentials {
+export interface ICredentials {
   email: string;
   access_token: string;
   aluno_id: string;
@@ -6,13 +6,13 @@ export interface Credentials {
   token_type: string;
 }
 
-export interface RedacaoFromUser {
+export interface IRedacaoFromUser {
   created_at: string;
   id: string;
   numero: number;
 }
 
-export interface Redacao {
+export interface IRedacao {
   id: string;
   aluno: {
     id: string;
