@@ -25,6 +25,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (storedCredentials) {
       setCredentials(JSON.parse(storedCredentials));
       setIsAuthenticated(true);
+    } else {
+      const sessionStorageCredentials = sessionStorage.getItem("credentials");
+      if (sessionStorageCredentials) {
+        setCredentials(JSON.parse(sessionStorageCredentials));
+        setIsAuthenticated(true);
+      }
     }
   }, []);
 
@@ -45,6 +51,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (remember) {
         localStorage.setItem("credentials", JSON.stringify(userCredentials));
       }
+      sessionStorage.setItem("credentials", JSON.stringify(userCredentials));
       setCredentials(userCredentials);
       console.log(userCredentials);
     } else {

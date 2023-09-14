@@ -12,6 +12,7 @@ export const Login: React.FC = () => {
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>();
+  const [logging, setLogging] = useState(false);
 
   useEffect(() => {
     if (auth && auth.isAuthenticated) {
@@ -22,13 +23,16 @@ export const Login: React.FC = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (auth) {
+      setLogging(true);
       auth
         .login(email, password, remember)
         .then(() => {
+          setLogging(false);
           redirect("/");
         })
         .catch((err: AxiosError) => {
           setError(true);
+          setLogging(false);
           switch (err.status) {
             case 401:
               setErrorMessage("Usuário ou senha inválidos. Tente novamente.");
@@ -67,8 +71,9 @@ export const Login: React.FC = () => {
             className="w-full px-4 py-2 rounded-md border-slate-200 border-2 placeholder:text-slate-500 outline-indigo-400"></input>
           <button
             type="submit"
-            className="w-full rounded-md bg-indigo-600 text-white py-3 my-4 hover:bg-indigo-700 transition-colors duration-150">
-            Continuar
+            disabled={logging}
+            className="w-full rounded-md bg-indigo-600 text-white py-3 my-4 hover:bg-indigo-700 transition-colors duration-150 disabled:animate-pulse">
+            {!logging ? "Continuar" : "Aguarde"}
           </button>
           {error && (
             <p className="text-red-700 text-sm font-medium">
