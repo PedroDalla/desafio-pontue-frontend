@@ -5,7 +5,7 @@ import { Nav } from "../components/Nav";
 import { IRedacao } from "../types";
 import { IconFilePlus } from "@tabler/icons-react";
 import { ItemPreview } from "../components/ItemPreview";
-import { getDetailedRedacoesFromUser } from "../services/API";
+import { getDetailedRedacoesFromUserPaginated } from "../services/API";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
 import { createPortal } from "react-dom";
 import { UploadModal } from "../components/UploadModal";
@@ -16,6 +16,8 @@ export const Home: React.FC = () => {
   const [data, setData] = useState<IRedacao[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalEnabled, setModalEnabled] = useState(false);
+  const [totalPages, setTotalPages] = useState<number>();
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (auth && !auth.isAuthenticated) {
@@ -27,16 +29,22 @@ export const Home: React.FC = () => {
   useEffect(() => {
     if (auth && auth.credentials) {
       const accessToken = auth.credentials.access_token;
-      getDetailedRedacoesFromUser(auth.credentials.aluno_id, accessToken)
-        .then((data) => {
-          setData(data);
+      setLoading(true);
+      getDetailedRedacoesFromUserPaginated(
+        auth.credentials.aluno_id,
+        accessToken,
+        currentPage
+      )
+        .then((result) => {
+          setData(result.data);
+          setTotalPages(result.totalPages);
           setLoading(false);
         })
         .catch(() => {
           navigate("/error");
         });
     }
-  }, []);
+  }, [currentPage]);
 
   //Only render data if user is authenticated
   if (!auth || !auth.credentials) return null;
@@ -77,6 +85,25 @@ export const Home: React.FC = () => {
             : data.map((item, index) => (
                 <ItemPreview item={item} key={index} />
               ))}
+        </div>
+
+        {/* Pagination Section */}
+        <div className="flex w-full justify-center items-center mt-10 gap-1">
+          {new Array(totalPages).fill(undefined).map((_item, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                setCurrentPage(index + 1);
+              }}
+              disabled={currentPage === index + 1 || loading}
+              className={`${
+                currentPage === index + 1
+                  ? "bg-indigo-800 text-white"
+                  : "hover:-translate-y-1"
+              } flex justify-center items-center font-medium w-8 h-8 p-4 cursor-pointer rounded-md border-slate-200 border-2 hover:bg-indigo-800 hover:text-white transition-all duration-75`}>
+              {index + 1}
+            </button>
+          ))}
         </div>
       </main>
       {createPortal(
